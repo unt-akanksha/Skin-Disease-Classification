@@ -2,7 +2,7 @@
 
 A deep learning project that classifies dermatoscopic images into 5 skin disease categories using a custom CNN and transfer learning with ResNet50.
 
-> **Course Project — [Your Course Name]**  
+> **Course Project — ADTA 5550 Section 400 - Deep Learning with Big Data (Summer 2026 8W1)**  
 > **Team:** Tiwari, Akanksha · Amusa, Olaribigbe · Selvaraj, Kavinraaj
 > **Deadline:** July 19, 2025
 
