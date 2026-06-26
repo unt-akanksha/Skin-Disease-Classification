@@ -216,3 +216,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dataset
+data/
+*.zip
+*.tar.gz
+
+# Model weights
+models/*.h5
+models/*.pt
+models/*.keras
+
+# Notebook outputs
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
