@@ -126,7 +126,7 @@ See [`data/README.md`](data/README.md) for instructions.
 |------|--------|------|
 | Akanksha Tiwari | [@unt-akanksha](https://github.com/unt-akanksha) | CNN Modeling |
 | [Teammate 2] | [@username] | Data + EDA |
-| [Teammate 3] | [@username] | Evaluation + Slides |
+| Amusa Olaribigbe | @olla1am  | Evaluation + Slides |
 
 ---
 
