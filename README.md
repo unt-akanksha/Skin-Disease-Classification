@@ -1,20 +1,19 @@
-# 🩺 Skin Disease Classification using CNN
+# Skin Disease Classification
 
-A deep learning project that classifies dermatoscopic images into 5 skin disease categories using a custom CNN and transfer learning with ResNet50.
+An image-classification project comparing a convolutional neural network trained from scratch with a fine-tuned ResNet50. The models classify images into five skin-condition categories. This repository contains the final end-to-end notebook, saved visualizations, and project documentation.
 
-> **Course Project — ADTA 5550 Section 400 - Deep Learning with Big Data (Summer 2026 8W1)**  
-> **Team:** Tiwari, Akanksha · Amusa, Olaribigbe · Selvaraj, Kavinraaj
-> **Deadline:** July 19, 2025
-
----
-
-## 📌 Problem Statement
-
-Skin diseases are often misdiagnosed in under-served regions due to a lack of specialist access. This project builds a CNN-based image classifier that can screen for 5 skin conditions from dermatoscopic images, framed as a **screening aid** (not a diagnostic tool).
+**Course project:** ADTA 5550, Deep Learning with Big Data
+**Team:** Akanksha Tiwari, Olaribigbe Amusa, and Kavinraaj Selvaraj
 
 ---
 
-## 📁 Dataset
+## Problem Statement
+
+This project evaluates whether convolutional models can distinguish five skin-condition classes from images. It is an academic experiment, not a clinical screening or diagnostic tool.
+
+---
+
+## Dataset
 
 **Source:** [Skin Disease Classification Dataset — Mendeley Data](https://data.mendeley.com/datasets/3hckgznc67/1)  
 **DOI:** 10.17632/3hckgznc67.1  
@@ -29,61 +28,43 @@ Skin diseases are often misdiagnosed in under-served regions due to a lack of sp
 | SJS-TEN | 3,164 |
 | **Total** | **9,548** |
 
-⚠️ Dataset is **class-imbalanced** — addressed via data augmentation during training.
+The dataset is class-imbalanced. The notebook applies data augmentation during training. Dataset images are not included in this repository; see [`data/README.md`](data/README.md) for download and folder setup instructions.
 
-> The dataset is not included in this repo. See [`data/README.md`](data/README.md) for download instructions.
+## Models
 
----
+- **Baseline CNN:** Three convolutional blocks trained from scratch, followed by a dense classification head.
+- **ResNet50:** ImageNet-pretrained backbone with a custom classification head; the top 50 backbone layers were fine-tuned.
 
-## 🧠 Model Architecture
-
-### Part A — Baseline CNN (from scratch)
-- 3 convolutional blocks (32 → 64 → 128 filters)
-- BatchNormalization + MaxPooling + Dropout after each block
-- Dense head: 256 units → 5-class softmax output
-- Optimizer: Adam (lr=0.001)
-- Input size: 224×224×3
-
-### Part B — Transfer Learning (ResNet50)
-- Base: ResNet50 pretrained on ImageNet (175 layers)
-- Phase 1: Frozen base, train classification head only
-- Phase 2: Unfreeze top layers, fine-tune at lr=1e-5
-- Custom head: GlobalAveragePooling → Dense(256) → Dropout(0.5) → Dense(5)
+Both models use 224 × 224 RGB inputs and predict the same five classes.
 
 ---
 
-## 📊 Results
+## Results
 
-| Model | Val Accuracy | Val Loss |
-|-------|-------------|----------|
-| Baseline CNN | <!-- fill after training --> | <!-- fill --> |
-| ResNet50 (Phase 1) | <!-- fill --> | <!-- fill --> |
-| ResNet50 (Fine-tuned) | <!-- fill --> | <!-- fill --> |
+| Model | Validation accuracy | Validation loss | Epochs |
+|-------|--------------------:|---------------:|-------:|
+| Baseline CNN | 92.30% | 0.2350 | 20 |
+| ResNet50 (fine-tuned) | 57.13% | 1.0837 | 13 |
 
-> Training curves and confusion matrix available in [`results/`](results/)
+Metrics are from the notebook's saved model-comparison output on the 20% validation split. The baseline CNN outperformed the fine-tuned ResNet50 in this experiment; the notebook discusses possible causes and limitations. Training curves and sample images are available in [`results/`](results/).
 
 ---
 
-## 📂 Project Structure
+## Repository Structure
 
 ```
 Skin-Disease-Classification/
 ├── data/                  # Dataset (not tracked by git — see data/README.md)
 ├── notebooks/
-│   ├── 01_eda.ipynb           # Exploratory Data Analysis
-│   ├── 02_preprocessing.ipynb # Data preprocessing pipeline
-│   └── 03_model_training.ipynb# CNN + Transfer Learning
-├── models/                # Saved model weights (not tracked by git)
-├── results/               # Training curves, confusion matrix, metrics
-├── utils/
-│   └── config.py          # Shared config (image size, classes, etc.)
-├── requirements.txt
+│   └── Skin_Disease_Classification.ipynb  # Final end-to-end analysis and modeling
+├── models/                # Generated model weights (not tracked)
+├── results/               # Training curves and sample images
 └── README.md
 ```
 
 ---
 
-## ▶️ How to Run
+## Run the Notebook
 
 **1. Clone the repo:**
 ```bash
@@ -91,46 +72,25 @@ git clone https://github.com/unt-akanksha/Skin-Disease-Classification.git
 cd Skin-Disease-Classification
 ```
 
-**2. Install dependencies:**
+**2. Install the notebook dependencies** (Python, TensorFlow/Keras, NumPy, Pandas, Matplotlib, Seaborn, and scikit-learn):
 ```bash
-pip install -r requirements.txt
+pip install tensorflow numpy pandas matplotlib seaborn scikit-learn
 ```
 
 **3. Download the dataset:**
 See [`data/README.md`](data/README.md) for instructions.
 
-**4. Run notebooks in order:**
-```
-01_eda.ipynb → 02_preprocessing.ipynb → 03_model_training.ipynb
-```
+**4. Open and run** [`notebooks/Skin_Disease_Classification.ipynb`](notebooks/Skin_Disease_Classification.ipynb) from top to bottom. Configure the dataset path as described in the notebook before running the data-loading cells. Training may require a GPU and can take substantial time.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.9-blue)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.20-orange)
-![Keras](https://img.shields.io/badge/Keras-3.x-red)
-
-- Python 3.9
-- TensorFlow / Keras
-- NumPy, Pandas, Matplotlib, Seaborn
-- Scikit-learn
-- Jupyter Notebook
+Python, TensorFlow/Keras, NumPy, Pandas, Matplotlib, Seaborn, scikit-learn, and Jupyter Notebook.
 
 ---
 
-## 👥 Team
-
-| Name | GitHub | Lane |
-|------|--------|------|
-| Akanksha Tiwari | [@unt-akanksha](https://github.com/unt-akanksha) | CNN Modeling |
-| [Teammate 2] | [@username] | Data + EDA |
-| [Teammate 3] | [@username] | Evaluation + Slides |
-
----
-
-## 📄 License
+## License
 
 MIT License — see [LICENSE](LICENSE) for details.
 
