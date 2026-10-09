@@ -3,7 +3,7 @@
 An image-classification project comparing a convolutional neural network trained from scratch with a fine-tuned ResNet50. The models classify images into five skin-condition categories. This repository contains the final end-to-end notebook, saved visualizations, and project documentation.
 
 **Course project:** ADTA 5550, Deep Learning with Big Data
-**Team:** Akanksha Tiwari, Olaribigbe Amusa, and Kavinraaj Selvaraj
+**Team:** Akanksha Tiwari
 
 ---
 
@@ -46,7 +46,7 @@ Both models use 224 × 224 RGB inputs and predict the same five classes.
 | Baseline CNN | 92.30% | 0.2350 | 20 |
 | ResNet50 (fine-tuned) | 57.13% | 1.0837 | 13 |
 
-Metrics are from the notebook's saved model-comparison output on the 20% validation split. The baseline CNN outperformed the fine-tuned ResNet50 in this experiment; the notebook discusses possible causes and limitations. Training curves and sample images are available in [`results/`](results/).
+Metrics are from the notebook's saved model-comparison output on the 20% validation split. The baseline CNN outperformed fine-tuned ResNet50 by 35.17 percentage points on this split. These validation results do not establish performance on external data or clinical use; see the notebook for class-level errors, limitations, and future work. Training curves and sample images are available in [`results/`](results/).
 
 ---
 
