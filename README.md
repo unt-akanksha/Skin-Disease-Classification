@@ -17,7 +17,7 @@ This project evaluates whether convolutional models can distinguish five skin-co
 
 **Source:** [Skin Disease Classification Dataset — Mendeley Data](https://data.mendeley.com/datasets/3hckgznc67/1)  
 **DOI:** 10.17632/3hckgznc67.1  
-**Published:** July 2024 · Self-collected from hospitals across multiple countries
+**Published:** July 2024 · Collected from hospitals across multiple countries
 
 | Class | Images |
 |-------|--------|
