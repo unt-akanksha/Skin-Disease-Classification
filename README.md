@@ -59,15 +59,6 @@ Evaluated on the held-out **test set**: 52 source photos (1,456 files) never use
 
 **Caveats:** the test set contains only 52 independent photos (4 for hyperpigmentation), and a single split and seed were used, so small differences should not be over-interpreted. These results do not establish performance on external data or clinical use. See Section 7 of the notebook for full discussion and limitations.
 
-### Revision note
-
-An earlier version of this project reported 92.30% validation accuracy for the baseline CNN and 57.13% for ResNet50. Those numbers were invalid for two reasons:
-
-1. **Leakage:** a file-level `validation_split` placed variants of every validation photo in the training set (100% of validation files were affected).
-2. **Wrong ResNet50 input scaling:** ResNet50 received [0, 1] pixels instead of `preprocess_input`.
-
-Correcting both reversed the comparison.
-
 ---
 
 ## Repository Structure
