@@ -1,5 +1,7 @@
 # Dataset
-data/
+data/*
+!data/.gitkeep
+!data/README.md
 *.zip
 *.tar.gz
 

@@ -1,6 +1,6 @@
 # Skin Disease Classification
 
-An image-classification project comparing a convolutional neural network trained from scratch with a fine-tuned ResNet50. The models classify images into five skin-condition categories. This repository contains the final end-to-end notebook, saved visualizations, and project documentation.
+An image-classification project comparing a convolutional neural network trained from scratch with ResNet50 transfer learning. The models classify clinical skin photographs into five skin-condition categories. This repository contains the final end-to-end notebook, saved visualizations, and project documentation.
 
 **Course project:** ADTA 5550, Deep Learning with Big Data
 **Team:** Akanksha Tiwari
@@ -19,34 +19,54 @@ This project evaluates whether convolutional models can distinguish five skin-co
 **DOI:** 10.17632/3hckgznc67.1  
 **Published:** July 2024 · Collected from hospitals across multiple countries
 
-| Class | Images |
-|-------|--------|
-| Acne | 1,148 |
-| Vitiligo | 2,016 |
-| Hyperpigmentation | 700 |
-| Nail Psoriasis | 2,520 |
-| SJS-TEN | 3,164 |
-| **Total** | **9,548** |
+| Class | Image files | Unique source photos |
+|-------|------------:|---------------------:|
+| Acne | 1,148 | 41 |
+| Vitiligo | 2,016 | 72 |
+| Hyperpigmentation | 700 | 25 |
+| Nail Psoriasis | 2,520 | 90 |
+| SJS-TEN | 3,164 | 113 |
+| **Total** | **9,548** | **341** |
 
-The dataset is class-imbalanced. The notebook applies data augmentation during training. Dataset images are not included in this repository; see [`data/README.md`](data/README.md) for download and folder setup instructions.
+The published dataset is **pre-augmented**: each source photo appears as 28 files (crops, padding, resizing, hue and saturation shifts, flips, and superpixel renderings). Files derived from the same photo are near-duplicates, so the notebook **splits by source photo** into train / validation / test (70 / 15 / 15% of photos per class). No photo appears in more than one split. Class imbalance is handled with a class-weighted loss.
+
+Dataset images are not included in this repository; see [`data/README.md`](data/README.md) for download and folder setup instructions.
 
 ## Models
 
-- **Baseline CNN:** Three convolutional blocks trained from scratch, followed by a dense classification head.
-- **ResNet50:** ImageNet-pretrained backbone with a custom classification head; the top 50 backbone layers were fine-tuned.
+- **Baseline CNN:** Three convolutional blocks trained from scratch, followed by a dense classification head. Pixels are scaled to [0, 1].
+- **ResNet50:** ImageNet-pretrained backbone with a custom classification head, using ResNet50's own input preprocessing (`preprocess_input`). Trained in two phases: (1) head only with the backbone frozen, (2) fine-tuning of the last residual block (`conv5`) at a low learning rate with BatchNorm frozen. The checkpoint with the lowest validation loss is kept.
 
-Both models use 224 × 224 RGB inputs and predict the same five classes.
+Both models use 224 × 224 RGB inputs, the same on-the-fly augmentation, and predict the same five classes.
 
 ---
 
 ## Results
 
-| Model | Validation accuracy | Validation loss | Epochs |
-|-------|--------------------:|---------------:|-------:|
-| Baseline CNN | 92.30% | 0.2350 | 20 |
-| ResNet50 (fine-tuned) | 57.13% | 1.0837 | 13 |
+Evaluated on the held-out **test set**: 52 source photos (1,456 files) never used for training or model selection.
 
-Metrics are from the notebook's saved model-comparison output on the 20% validation split. The baseline CNN outperformed fine-tuned ResNet50 by 35.17 percentage points on this split. These validation results do not establish performance on external data or clinical use; see the notebook for class-level errors, limitations, and future work. Training curves and sample images are available in [`results/`](results/).
+| Model | Test accuracy | Test macro-F1 | Test loss | Accuracy on 52 original photos |
+|-------|-------------:|--------------:|----------:|------------------------------:|
+| Baseline CNN | 55.91% | 0.547 | 1.285 | 59.6% |
+| ResNet50 transfer learning | **85.92%** | **0.851** | **0.449** | **94.2%** |
+
+- **Transfer learning wins clearly:** +30.0 percentage points in accuracy and +0.30 macro-F1, and higher F1 on every class.
+- **The baseline CNN overfits:** training accuracy reached 79% while validation accuracy stayed near 55–60%.
+- **ResNet50's best checkpoint used a frozen backbone:** fine-tuning `conv5` raised training accuracy to 98.6% without improving validation loss.
+- **Hardest classes:** SJS-TEN has the lowest ResNet50 recall (75%). Vitiligo and hyperpigmentation, both pigmentation disorders, are often confused with each other.
+
+![Confusion matrices](results/confusion_matrices.png)
+
+**Caveats:** the test set contains only 52 independent photos (4 for hyperpigmentation), and a single split and seed were used, so small differences should not be over-interpreted. These results do not establish performance on external data or clinical use. See Section 7 of the notebook for full discussion and limitations.
+
+### Revision note
+
+An earlier version of this project reported 92.30% validation accuracy for the baseline CNN and 57.13% for ResNet50. Those numbers were invalid for two reasons:
+
+1. **Leakage:** a file-level `validation_split` placed variants of every validation photo in the training set (100% of validation files were affected).
+2. **Wrong ResNet50 input scaling:** ResNet50 received [0, 1] pixels instead of `preprocess_input`.
+
+Correcting both reversed the comparison.
 
 ---
 
@@ -58,7 +78,7 @@ Skin-Disease-Classification/
 ├── notebooks/
 │   └── Skin_Disease_Classification.ipynb  # Final end-to-end analysis and modeling
 ├── models/                # Generated model weights (not tracked)
-├── results/               # Training curves and sample images
+├── results/               # Figures and model_comparison.csv
 └── README.md
 ```
 
@@ -72,15 +92,15 @@ git clone https://github.com/unt-akanksha/Skin-Disease-Classification.git
 cd Skin-Disease-Classification
 ```
 
-**2. Install the notebook dependencies** (Python, TensorFlow/Keras, NumPy, Pandas, Matplotlib, Seaborn, and scikit-learn):
+**2. Install the notebook dependencies** (Python, TensorFlow/Keras, NumPy, Pandas, Matplotlib, Seaborn, Pillow, and scikit-learn):
 ```bash
-pip install tensorflow numpy pandas matplotlib seaborn scikit-learn
+pip install tensorflow numpy pandas matplotlib seaborn pillow scikit-learn
 ```
 
 **3. Download the dataset:**
 See [`data/README.md`](data/README.md) for instructions.
 
-**4. Open and run** [`notebooks/Skin_Disease_Classification.ipynb`](notebooks/Skin_Disease_Classification.ipynb) from top to bottom. Configure the dataset path as described in the notebook before running the data-loading cells. Training may require a GPU and can take substantial time.
+**4. Open and run** [`notebooks/Skin_Disease_Classification.ipynb`](notebooks/Skin_Disease_Classification.ipynb) from top to bottom. A GPU is not required: the full run takes about 2 hours on an Apple M4 CPU (TensorFlow 2.21). On Google Colab, select a T4 GPU runtime and follow the instructions in the notebook's first cell.
 
 ---
 
